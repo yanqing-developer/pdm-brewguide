@@ -1,0 +1,39 @@
+import React from "react";
+export default function GuidancePanel({ guidance }) {
+  if (!guidance) return null;
+
+  const { nextQuestions, suggestedActions } = guidance;
+
+  return (
+    <div className="card" style={{ marginTop: 12 }}>
+      <h2>Personalised Guidance</h2>
+
+      {Array.isArray(nextQuestions) && nextQuestions.length > 0 ? (
+        <>
+          <div className="small" style={{ marginTop: 6, fontWeight: 700 }}>Next questions</div>
+          <ul className="small" style={{ marginTop: 6 }}>
+            {nextQuestions.slice(0, 3).map((q, i) => <li key={i}>{q}</li>)}
+          </ul>
+        </>
+      ) : (
+        <div className="small" style={{ marginTop: 6 }}>
+          No follow-up questions right now.
+        </div>
+      )}
+
+      {Array.isArray(suggestedActions) && suggestedActions.length > 0 ? (
+        <>
+          <div className="small" style={{ marginTop: 10, fontWeight: 700 }}>Suggested actions</div>
+          <div className="small" style={{ marginTop: 6 }}>
+            {suggestedActions.map((a, i) => (
+              <div key={i}>
+                <span className="badge">{a.action}</span>{" "}
+                <span className="muted">{a.endpoint}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
+};

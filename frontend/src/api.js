@@ -1,0 +1,94 @@
+// src/api.js
+
+export async function apiGet(path) {
+  const res = await fetch(path);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data?.error || "Request failed");
+  return data;
+}
+
+export async function apiPost(path, body) {
+  const res = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body || {})
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data?.error || "Request failed");
+  return data;
+}
+
+/**
+ * Open SSE stream for recommendations.
+ *
+ * Backend emits:
+ * - event: status  data: { phase: "start"|"computing"|... }
+ * - event: meta    data: { ok:true, usedMemory, nextQuestions, suggestedActions }
+ * - event: item    data: { index:number, item: Place }
+ * - event: done    data: { count:number }
+ * - event: error   data: { ok:false, error:string }   (best-effort)
+ */
+export function openRecommendationsStream(query, handlers) {
+  const params = new URLSearchParams();
+
+  if (typeof query?.userLat === "number") params.set("userLat", String(query.userLat));
+  if (typeof query?.userLon === "number") params.set("userLon", String(query.userLon));
+  if (typeof query?.radiusKm === "number") params.set("radiusKm", String(query.radiusKm));
+  if (typeof query?.preferWebsite === "boolean") params.set("preferWebsite", String(query.preferWebsite));
+
+  if (Array.isArray(query?.preferredTypes) && query.preferredTypes.length > 0) {
+    params.set("preferredTypes", query.preferredTypes.join(","));
+  }
+  if (Array.isArray(query?.nameKeywords) && query.nameKeywords.length > 0) {
+    params.set("nameKeywords", query.nameKeywords.join(","));
+  }
+
+  const url = `/api/recommendations/stream?${params.toString()}`;
+  const es = new EventSource(url);
+
+  const safeJson = (evt) => {
+    try {
+      return JSON.parse(evt.data);
+    } catch {
+      return null;
+    }
+  };
+
+  es.addEventListener("status", (evt) => {
+    const payload = safeJson(evt);
+    if (payload) handlers?.onStatus?.(payload);
+  });
+
+  es.addEventListener("meta", (evt) => {
+    const payload = safeJson(evt);
+    if (payload) handlers?.onMeta?.(payload);
+  });
+
+  es.addEventListener("item", (evt) => {
+    const payload = safeJson(evt);
+    if (payload) handlers?.onItem?.(payload);
+  });
+
+  es.addEventListener("done", (evt) => {
+    const payload = safeJson(evt);
+    handlers?.onDone?.(payload || {});
+    es.close();
+  });
+
+  // Note: EventSource's "error" often has no data. Treat as connection error.
+  es.addEventListener("error", () => {
+    handlers?.onError?.({
+      ok: false,
+      error: "Stream connection error (check backend logs, CORS, proxy buffering, or server availability)."
+    });
+    es.close();
+  });
+
+  return () => es.close();
+};
+
+export async function fetchBreweryTypes() {
+  const data = await apiGet("/api/breweries/types");
+  return data?.types || [];
+};
