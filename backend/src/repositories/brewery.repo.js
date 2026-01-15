@@ -79,3 +79,15 @@ export async function listBreweryTypes() {
   `);
   return r.rows.map(x => x.brewery_type);
 };
+
+export async function listAllBerlinBreweries(limit = 5000) {
+  const n = Number(limit);
+  const safeLimit = Number.isFinite(n) ? Math.max(1, Math.min(n, 5000)) : 5000;
+
+  const r = await query(
+    "SELECT * FROM brewery ORDER BY updated_at DESC LIMIT $1",
+    [safeLimit]
+  );
+
+  return r.rows;
+}

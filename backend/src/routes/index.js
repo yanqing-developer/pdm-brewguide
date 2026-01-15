@@ -6,6 +6,7 @@ import actionsRoutes from "./actions.routes.js";
 import recommendationsRoutes from "./recommendations.routes.js";
 import recommendationsStreamRoutes from "./recommendationsStream.routes.js"; 
 import breweriesRoutes from "./breweries.routes.js";
+import { resetUserData } from "../controllers/admin.controller.js";
 
 const router = express.Router();
 
@@ -16,5 +17,8 @@ router.use(actionsRoutes);
 router.use(recommendationsRoutes);
 router.use(recommendationsStreamRoutes);
 router.use(breweriesRoutes);
+
+router.post("/admin/reset-user-data", resetUserData);
+console.log("[routes] mounted: /admin/reset-user-data");
 
 export default router;

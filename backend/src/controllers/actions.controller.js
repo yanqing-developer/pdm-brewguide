@@ -79,4 +79,4 @@ export async function similarAction(req, res, next) {
   } catch (e) {
     next(e);
   }
-}
+};

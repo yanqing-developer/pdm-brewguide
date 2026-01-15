@@ -1,8 +1,8 @@
 import express from "express";
-import { getRecommendationsStream } from "../controllers/recommendationsStream.controller.js";
+import { streamRecommendations  } from "../controllers/recommendationsStream.controller.js";
 
 const router = express.Router();
 
-router.get("/recommendations/stream", getRecommendationsStream);
+router.get("/recommendations/stream", streamRecommendations );
 
 export default router;

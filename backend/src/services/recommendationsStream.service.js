@@ -1,4 +1,4 @@
-import { runRecommendations } from "./recommendations.service.js";
+import { runRecommendations } from "../services/recommendations.service";
 
 function sseWrite(res, { event, data }) {
   if (event) res.write(`event: ${event}\n`);

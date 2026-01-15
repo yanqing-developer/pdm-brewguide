@@ -1,0 +1,90 @@
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.4;
+}
+
+body {
+  margin: 0;
+  background: #f6f7f9;
+  color: #111;
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand h1 {
+  font-size: 18px;
+  margin: 0;
+}
+.brand p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #555;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.small {
+  font-size: 12px;
+  color: #444;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eef2ff;
+  border: 1px solid #e5e7eb;
+  margin-right: 6px;
+}
+
+.muted {
+  color: #666;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+button {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: white;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #f3f4f6;
+}

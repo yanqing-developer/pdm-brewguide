@@ -38,6 +38,7 @@ export const ENV = {
 
   // Recommendation tuning
   REC_TOP_N: num("REC_TOP_N", 10),
+  MAX_TOP_N: num("MAX_TOP_N", 50),
 
   // Radius controls (backend authoritative)
   DEFAULT_RADIUS_KM: num("DEFAULT_RADIUS_KM", 8),
