@@ -78,4 +78,4 @@ export async function listBreweryTypes() {
     ORDER BY brewery_type
   `);
   return r.rows.map(x => x.brewery_type);
-}
+};

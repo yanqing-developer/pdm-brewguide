@@ -7,4 +7,4 @@ export async function getBreweryTypes(req, res, next) {
   } catch (e) {
     next(e);
   }
-}
+};

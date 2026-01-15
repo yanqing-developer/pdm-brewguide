@@ -44,22 +44,39 @@ export async function dismissAction(req, res, next) {
 
 export async function similarAction(req, res, next) {
   try {
-    const { brewery_id, userLat, userLon } = req.body || {};
+    const {
+      brewery_id,
+      userLat,
+      userLon,
+      // allow passing current UI prefs (optional, backward-compatible)
+      radiusKm,
+      preferredTypes,
+      nameKeywords,
+      preferWebsite
+    } = req.body || {};
+
     if (!brewery_id) return res.status(400).json({ ok: false, error: "Missing brewery_id" });
 
     const id = String(brewery_id);
     await mustBrewery(id);
 
+    // Update memory based on the chosen brewery type
     const seed = await learnSimilar(id);
 
- 
+    // Re-run recommendations using the most up-to-date context we have:
+    // - user coords if provided
+    // - optional prefs from body (so UI changes can immediately reflect)
     const rec = await runRecommendations({
       userLat: typeof userLat === "number" ? userLat : undefined,
-      userLon: typeof userLon === "number" ? userLon : undefined
+      userLon: typeof userLon === "number" ? userLon : undefined,
+      radiusKm: typeof radiusKm === "number" ? radiusKm : undefined,
+      preferredTypes: Array.isArray(preferredTypes) ? preferredTypes : undefined,
+      nameKeywords: Array.isArray(nameKeywords) ? nameKeywords : undefined,
+      preferWebsite: typeof preferWebsite === "boolean" ? preferWebsite : undefined
     });
 
     res.json({ ok: true, seed, ...rec });
   } catch (e) {
     next(e);
   }
-};
+}
